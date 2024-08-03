@@ -4,7 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -23,7 +26,7 @@ public class SecurityConfig {
 	{
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize.requestMatchers("/dish/**").authenticated().anyRequest().permitAll())
-                .addFilterBefore(null, null).csrf(csrf -> csrf.disable())
+                .addFilterBefore(new JwtValidator(), BasicAuthenticationFilter.class).csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(new CorsConfigurationSource() {
 
                     @Override
@@ -41,6 +44,12 @@ public class SecurityConfig {
                 })).httpBasic(withDefaults()).formLogin(withDefaults());
 		
 		return http.build();
+	}
+	
+	public  PasswordEncoder passwordEncoder()
+	{
+		return new BCryptPasswordEncoder();
+		
 	}
 
 }
