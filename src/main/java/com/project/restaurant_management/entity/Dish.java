@@ -1,5 +1,7 @@
 package com.project.restaurant_management.entity;
 
+
+
 import jakarta.persistence.*;
 import lombok.Data;
 
